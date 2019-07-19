@@ -10,6 +10,7 @@ addons:
 
 before_install:
   - gem update --system
+  - gem install bundler:2.0.2
 
 install:
   - curl -sSfL https://raw.githubusercontent.com/getgauge/infrastructure/master/nightly_scripts/install_latest_gauge_nightly.sh | bash
