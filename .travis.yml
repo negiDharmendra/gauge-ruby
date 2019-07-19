@@ -9,8 +9,7 @@ addons:
       - default-jdk
 
 before_install:
-  - bundle update --bundler
-  - gem install bundler:2.0.2
+  - gem update --system
 
 install:
   - curl -sSfL https://raw.githubusercontent.com/getgauge/infrastructure/master/nightly_scripts/install_latest_gauge_nightly.sh | bash
