@@ -26,6 +26,11 @@ jobs:
           npm config delete prefix
           source ~/.bashrc
 
+      - run: |
+          ls -a ~/
+          echo "========"
+          ls ~/.rbenv/bin
+
       - name: Install ruby-build
         run: |
           git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
