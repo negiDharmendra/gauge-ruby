@@ -36,6 +36,11 @@ jobs:
         run: |
           git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
 
+      - name: Install dependencies required to install Ruby
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          sudo apt-get install -y libreadline-dev
+
       - name: Install ruby 2.6.0
         run: |
           export PATH="$HOME/.rbenv/bin:$PATH"
