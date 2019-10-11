@@ -30,6 +30,7 @@ jobs:
           ls -a ~/
           echo "========"
           ls ~/.rbenv/bin
+          echo $PATH
 
       - name: Install ruby-build
         run: |
@@ -37,6 +38,7 @@ jobs:
 
       - name: Install ruby 2.6.0
         run: |
+          export PATH="$HOME/.rbenv/bin:$PATH"
           rbenv install 2.6.0
 
       - name: Install bundler
