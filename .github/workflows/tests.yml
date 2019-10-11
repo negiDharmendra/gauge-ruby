@@ -21,7 +21,7 @@ jobs:
 
       - name: Install bundler
         run: |
-          bundle update --bundler
+          bundle -v
 
       - name: Install gems
         run: |
