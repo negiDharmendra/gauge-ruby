@@ -18,6 +18,11 @@ jobs:
         run: |
           git clone https://github.com/rbenv/rbenv.git ~/.rbenv
 
+      - run: |
+          ls -a ~/
+          echo "========"
+          ls ~/.rbenv/bin
+          echo $PATH
 
       - name: Setup rbenv
         run: |
@@ -25,12 +30,6 @@ jobs:
           echo 'eval "$(rbenv init -)"' >> ~/.bashrc
           npm config delete prefix
           source ~/.bashrc
-
-      - run: |
-          ls -a ~/
-          echo "========"
-          ls ~/.rbenv/bin
-          echo $PATH
 
       - name: Install ruby-build
         run: |
@@ -48,6 +47,7 @@ jobs:
 
       - name: Install bundler
         run: |
+          export PATH="$HOME/.rbenv/bin:$PATH"
           gem install bundler:2.0.2
 
       - name: Install gems
