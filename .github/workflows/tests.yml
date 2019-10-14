@@ -27,6 +27,7 @@ jobs:
       - name: Run tests
         run: |
           export PATH="$HOME/.rbenv/versions/2.6.0/bin:$PATH"
+          gem install bundler:2.0.2
           bundle install
           bundle exec rake spec
 
