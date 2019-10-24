@@ -59,12 +59,15 @@ jobs:
     name: Run FTs on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     needs: test
+    env:
+      RUBY_PLUGIN_BRANCH: ${{ github.ref }}
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
 
     steps:
       - uses: actions/checkout@v1
+      - run: echo $RUBY_PLUGIN_BRANCH
 
       - name: Get rbenv and ruby-build
         run: |
