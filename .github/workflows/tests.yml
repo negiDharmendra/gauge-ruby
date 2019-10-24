@@ -86,9 +86,18 @@ jobs:
         with:
           go-version: 1.13.1
 
-      - name: Install gauge
+      - name: Install gauge with grpc runner
+        if: github.ref == 'grpc'
         run: |
-          git clone https://github.com/getgauge/gauge
+          git clone --depth=1 --branch=gRPC  https://github.com/getgauge/gauge.git
+          cd gauge
+          go run build/make.go --verbose
+          go run build/make.go --install --prefix=/tmp/
+
+      - name: Install gauge
+        if: github.ref != 'grpc'
+        run: |
+          git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
           go run build/make.go --verbose
           go run build/make.go --install --prefix=/tmp/
