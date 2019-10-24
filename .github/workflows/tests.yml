@@ -112,6 +112,7 @@ jobs:
           cd gauge-tests
           gauge install
           gauge -v
+          cat ~/.gauge/plugins/ruby/0.5.3/ruby.json
           ./gradlew clean rubyFT
 
   ft-windows:
