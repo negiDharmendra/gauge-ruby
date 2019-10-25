@@ -60,7 +60,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     needs: test
     env:
-      RUBY_PLUGIN_BRANCH: ${{ github.ref }}
+      RUBY_PLUGIN_BRANCH: grpc
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
@@ -123,7 +123,7 @@ jobs:
     runs-on: windows-latest
     needs: test-windows
     env:
-      RUBY_PLUGIN_BRANCH: ${{ github.ref }}
+      RUBY_PLUGIN_BRANCH: grpc
 
     steps:
       - uses: actions/checkout@v1
@@ -133,9 +133,18 @@ jobs:
           choco install ruby --version 2.6.0.1
           gem install bundler:2.0.2
 
-      - name: Install gauge
+      - name: Install gauge with grpc runner
+        if: contains(github.ref, 'grpc')
         run: |
-          git clone https://github.com/getgauge/gauge
+          git clone --depth=1 --branch=gRPC  https://github.com/getgauge/gauge.git
+          cd gauge
+          go run build/make.go --verbose
+          go run build/make.go --install
+
+      - name: Install gauge
+        if: false == contains(github.ref, 'grpc')
+        run: |
+          git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
           go run build/make.go --verbose
           go run build/make.go --install
