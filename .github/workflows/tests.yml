@@ -150,6 +150,7 @@ jobs:
           go run build/make.go --install
 
       - name: Run tests
+        shell: pwsh
         run: |
           bundle install
           bundle exec rake install force_install
@@ -157,10 +158,6 @@ jobs:
           git clone --depth=1 https://github.com/getgauge/gauge-tests
           ls .
           cd gauge-tests
-          cd .\resources\LocalTemplates\ruby\
-          bundle install
-          gem list
-          cd ..\..\..\..\
           gauge install
           gauge -v
           .\gradlew.bat clean rubyFT
