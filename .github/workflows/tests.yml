@@ -153,7 +153,9 @@ jobs:
         run: |
           bundle install
           bundle exec rake install force_install
+          ls .
           git clone --depth=1 https://github.com/getgauge/gauge-tests
+          ls .
           cd gauge-tests
           cd .\resources\LocalTemplates\ruby\
           bundle install
