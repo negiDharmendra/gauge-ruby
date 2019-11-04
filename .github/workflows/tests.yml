@@ -121,7 +121,7 @@ jobs:
   ft-windows:
     name: Run FTs on windows
     runs-on: windows-latest
-    needs: test-windows
+    # needs: test-windows
     env:
       RUBY_PLUGIN_BRANCH: grpc
 
@@ -154,13 +154,15 @@ jobs:
           go run build/make.go --verbose
           go run build/make.go --install
 
+      - name: Install gauge-ruby
+        run: |
+          bundle install
+          bundle exec rake install force_install
+
       - name: Run tests
         shell: pwsh
         run: |
           git clone --depth=1 https://github.com/getgauge/gauge-tests
-          bundle install
-          bundle exec rake install force_install
-          ls .
           cd gauge-tests
           gauge install
           gauge -v
