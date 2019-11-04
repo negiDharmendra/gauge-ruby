@@ -152,10 +152,10 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
+          git clone --depth=1 https://github.com/getgauge/gauge-tests
           bundle install
           bundle exec rake install force_install
           ls .
-          git clone --depth=1 https://github.com/getgauge/gauge-tests
           ls .
           cd gauge-tests
           gauge install
