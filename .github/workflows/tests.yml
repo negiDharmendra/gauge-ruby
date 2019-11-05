@@ -112,7 +112,7 @@ jobs:
   ft-windows:
     name: Run FTs on windows
     runs-on: windows-latest
-    # needs: test-windows
+    needs: test-windows
     env:
       RUBY_PLUGIN_BRANCH: grpc
 
