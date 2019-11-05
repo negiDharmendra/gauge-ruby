@@ -156,13 +156,17 @@ jobs:
 
       - name: Install gauge-ruby
         run: |
+          ${env:PATH} += ";C:\Program Files\gauge\bin"
+          gauge -v
           bundle install
           bundle exec rake install force_install
+          gauge -v
 
       - name: Run tests
         shell: pwsh
         run: |
           ${env:PATH} += ";C:\Program Files\gauge\bin"
+          Get-Item Env:RUBY_PLUGIN_BRANCH
           git clone --depth=1 https://github.com/getgauge/gauge-tests
           cd gauge-tests
           gauge install
