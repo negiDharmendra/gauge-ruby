@@ -137,7 +137,9 @@ jobs:
           go run build/make.go --install
 
       - name: Install gauge-ruby
+        shell: pwsh
         run: |
+          ${env:PATH} += ";C:\Program Files\gauge\bin"
           bundle install
           bundle exec rake install force_install
 
