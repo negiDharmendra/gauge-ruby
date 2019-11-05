@@ -89,16 +89,7 @@ jobs:
         with:
           go-version: 1.13.1
 
-      - name: Install gauge with grpc runner
-        if: contains(github.ref, 'grpc')
-        run: |
-          git clone --depth=1 --branch=gRPC  https://github.com/getgauge/gauge.git
-          cd gauge
-          go run build/make.go --verbose
-          go run build/make.go --install --prefix=/tmp/
-
       - name: Install gauge
-        if: false == contains(github.ref, 'grpc')
         run: |
           git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
@@ -138,16 +129,7 @@ jobs:
           choco install ruby --version 2.6.0.1
           gem install bundler:2.0.2
 
-      - name: Install gauge with grpc runner
-        if: contains(github.ref, 'grpc')
-        run: |
-          git clone --depth=1 --branch=gRPC  https://github.com/getgauge/gauge.git
-          cd gauge
-          go run build/make.go --verbose
-          go run build/make.go --install
-
       - name: Install gauge
-        if: false == contains(github.ref, 'grpc')
         run: |
           git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
