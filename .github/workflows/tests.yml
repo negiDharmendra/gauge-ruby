@@ -162,6 +162,9 @@ jobs:
     steps:
       - uses: actions/checkout@v1
 
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+
       - name: Get rbenv and ruby-build
         run: |
           git clone https://github.com/rbenv/rbenv.git ~/.rbenv
@@ -190,6 +193,7 @@ jobs:
 
       - name: Run tests
         run: |
+          node -v
           export PATH="$HOME/.rbenv/versions/2.6.0/bin:/tmp/bin:$PATH"
           gem install bundler:2.0.2
           bundle install
@@ -216,6 +220,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v1
+      - name: Use Node.js
+        uses: actions/setup-node@v1
 
       - name: Install ruby 2.6.0.1 and bundler
         run: |
@@ -236,6 +242,7 @@ jobs:
 
       - name: Run tests
         run: |
+          node -v
           ${env:PATH} += ";C:\Program Files\gauge\bin"
           gem install bundler:2.0.2
           bundle install
