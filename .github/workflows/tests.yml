@@ -190,6 +190,18 @@ jobs:
           cd gauge
           go run build/make.go --verbose
           go run build/make.go --install --prefix=/tmp/
+          echo "::add-path::/tmp/bin"
+      - name: Prep gauge-js
+        run: |
+          git clone https://github.com/getgauge/gauge-js.git
+          cd gauge-js
+          npm install
+        shell: bash
+
+      - name: Install gauge-js
+        run: |
+          cd gauge-js
+          npm run installPlugin
 
       - name: Run tests
         run: |
@@ -239,11 +251,20 @@ jobs:
           cd gauge
           go run build/make.go --verbose
           go run build/make.go --install
+          echo "::add-path::C:\\Program Files\\gauge\\bin"
+      - name: Prep gauge-js
+        run: |
+          git clone https://github.com/getgauge/gauge-js.git
+          cd gauge-js
+          npm install
 
+      - name: Install gauge-js
+        run: |
+          cd gauge-js
+          npm run installPlugin
       - name: Run tests
         run: |
           node -v
-          ${env:PATH} += ";C:\Program Files\gauge\bin"
           gem install bundler:2.0.2
           bundle install
           bundle exec rake install force_install
