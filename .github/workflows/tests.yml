@@ -282,6 +282,8 @@ jobs:
         run: |
           gem install bundler:2.0.2
           bundle install
+          echo "======Installing gauge ruby======"
+          gauge -v
           bundle exec rake install force_install
 
       - name: Clone LSP tests
