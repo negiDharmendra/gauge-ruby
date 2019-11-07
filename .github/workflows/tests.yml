@@ -135,15 +135,11 @@ jobs:
           go run build/make.go --verbose
           go run build/make.go --install
 
-      - name: Install gauge-ruby
+      - name: Install gauge ruby
         shell: pwsh
         run: |
-          go env
-          echo "Installing ---github.com/getgauge/common > "
-          go get -u -d github.com/getgauge/common
-          ${env:PATH} += ";C:\Program Files\gauge\bin"
-          bundle install
-          bundle exec rake install force_install
+          go run ./make.go
+          go run ./make.go --install
 
       - name: Run tests
         shell: pwsh
@@ -284,14 +280,8 @@ jobs:
       - name: Install gauge ruby
         shell: pwsh
         run: |
-          go env
-          echo "Installing ---github.com/getgauge/common > "
-          go get -u -d github.com/getgauge/common
-          ${env:PATH} += ";C:\Program Files\gauge\bin"
-          bundle install
-          echo "======Installing gauge ruby======"
-          gauge -v
-          bundle exec rake install force_install
+          go run ./make.go
+          go run ./make.go --install
 
       - name: Clone LSP tests
         run: |

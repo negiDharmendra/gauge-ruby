@@ -31,12 +31,25 @@ task :default => [:spec]
 
 desc "Fetch github.com/getgauge/common"
 task :fetch_common do
-    sh "go get -u -d github.com/getgauge/common"
+    sh "echo \"Cheching go version\""
+    sh "go version"
+    sh "echo \" Installing github.com/getgauge/common ===>\""
+    begin
+        sh "go get -u -d github.com/getgauge/common"
+    rescue Exception => e
+        sh "echo \" Error #{e}\""
+    end
+    sh "echo \" Installed github.com/getgauge/common ===>\""
 end
 
 desc "Compile gauge-ruby.go for current OS/Arch"
 task :compile => [:fetch_common, :build] do
-    sh "go build -o pkg/#{binary_name(nil)} gauge-ruby.go"
+    sh "echo \" building go build -o pkg/#{binary_name(nil)} gauge-ruby.go ===>\""
+    begin
+        sh "go build -o pkg/#{binary_name(nil)} gauge-ruby.go"
+    rescue Exception => e
+        sh "echo \" Error #{e}\""
+    end
 end
 
 desc "X-Compile gauge-ruby.go for all supported OS/Arch"
@@ -53,12 +66,14 @@ end
 
 desc "Create current OS/Arch specific installable packages"
 task :package => [:clobber, :compile] do
+    sh "echo \"create_package\" "
     create_package
 end
 
 desc "Install Gauge-ruby plugin"
 task :force_install, [:prefix] => [:package] do |t, args|
     env_vars = (args[:prefix] || "") == "" ? {} : {"GAUGE_HOME" => args[:prefix]}
+    sh "echo \"Installing gauge-ruby===>\""
     system env_vars, "gauge uninstall ruby --version #{PLUGIN_VERSION}"
     system env_vars, "gauge install ruby -f deploy/gauge-ruby-#{PLUGIN_VERSION}.zip"
 end
@@ -69,22 +84,30 @@ task :gen_proto do
 end
 
 def create_package(os=nil, arch=nil)
+    sh "echo \" inside create_package\" "
     dest_dir="gauge-ruby-#{PLUGIN_VERSION}-#{os}.#{ARCH_MAP[arch]}".chomp('.').chomp('-')
     deploy_dir = "deploy/#{dest_dir}"
     bin_dir = "#{deploy_dir}/bin"
+    sh "echo \" created  #{bin_dir}\""
     mkdir_p bin_dir
     ["skel", "ruby.json", "notice.md"].each {|f|
         cp_r f, deploy_dir, verbose: true, preserve: true
     }
     cp_r binary_path(os, arch), bin_dir, preserve: true, verbose: true
     if windows?
+        sh "echo \"Creating zip file===>\""
         zf = ZipFileGenerator.new(deploy_dir, "#{deploy_dir}.zip")
-        zf.write()
+        begin
+            zf.write()
+        rescue Exception => e
+            sh "echo \" Error #{e}\""
+        end
     else
         Dir.chdir(deploy_dir){
             system "zip -r ../#{dest_dir}.zip ."
         }
     end
+    sh "echo \"Remove dir #{deploy_dir}\""
     rm_rf deploy_dir
 end
 
@@ -132,7 +155,7 @@ class ZipFileGenerator
         entries.each { |e|
             zipFilePath = path == "" ? e : File.join(path, e)
             diskFilePath = File.join(@inputDir, zipFilePath)
-            puts "Deflating " + diskFilePath
+            sh "echo \"Deflating  #{ diskFilePath}\""
             if  File.directory?(diskFilePath)
                 io.mkdir(zipFilePath) unless File.exist?(zipFilePath)
                 subdir =Dir.entries(diskFilePath); subdir.delete("."); subdir.delete("..")
