@@ -137,10 +137,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
+        os: [ubuntu-latest]
     env:
       RUBY_PLUGIN_BRANCH: grpc
-      USE_LOCAL_GAUGE_RUBY: true
 
     steps:
       - uses: actions/checkout@v1
@@ -158,7 +157,7 @@ jobs:
           git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
           export PATH="$HOME/.rbenv/bin:$PATH"
           rbenv install 2.6.0
-          echo "::add-path::~/.rbenv/versions/2.6.0/bin"
+          echo "::add-path::$HOME/.rbenv/versions/2.6.0/bin"
 
       - name: Install ruby on windows
         if: matrix.os == 'windows-latest'
@@ -173,6 +172,92 @@ jobs:
       - name: Install gauge
         if: matrix.os != 'windows-latest'
         run: |
+          echo $PATH
+          ls ~/.rbenv/versions/2.6.0/bin
+          git clone --depth=1 https://github.com/getgauge/gauge.git
+          cd gauge
+          go run build/make.go --verbose
+          go run build/make.go --install --prefix=/tmp/
+          echo "::add-path::/tmp/bin"
+
+      - name: Install gauge
+        if: matrix.os == 'windows-latest'
+        run: |
+          git clone --depth=1 https://github.com/getgauge/gauge.git
+          cd gauge
+          go run build/make.go --verbose
+          go run build/make.go --install
+          echo "::add-path::C:\\Program Files\\gauge\\bin"
+
+      - name: Install bundler
+        run: |
+          gem install bundler:2.0.2
+
+      - name: Install gauge ruby
+        run: |
+          go run ./make.go
+          go run ./make.go --install
+
+      - name: Prepare lsp tests
+        run: |
+          git clone --depth=1 --branch=local-gauge-ruby https://github.com/getgauge/gauge-lsp-tests
+          cd gauge-lsp-tests
+          npm install
+          gauge install
+
+      - name: Run lsp tests
+        run: |
+          cd gauge-lsp-tests
+          gauge -v
+          gauge run --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd --verbose
+
+      - uses: actions/upload-artifact@master
+        if: failure()
+        with:
+          name: logs-linux
+          path: gauge-lsp-tests/logs
+
+  lsp-windows:
+    name: Run lsp on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest]
+    env:
+      RUBY_PLUGIN_BRANCH: grpc
+    steps:
+      - uses: actions/checkout@v1
+      - run: |
+          echo $GITHUB_WORKSPACE
+          echo "::set-env name=LOCAL_GAUGE_RUBY_PATH::$GITHUB_WORKSPACE"
+      - run: |
+            echo $LOCAL_GAUGE_RUBY_PATH
+
+      - name: Install ruby on linux
+        if: matrix.os != 'windows-latest'
+        run: |
+          sudo apt-get install -y libreadline-dev
+          git clone https://github.com/rbenv/rbenv.git ~/.rbenv
+          git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+          export PATH="$HOME/.rbenv/bin:$PATH"
+          rbenv install 2.6.0
+          echo "::add-path::$HOME/.rbenv/versions/2.6.0/bin"
+
+      - name: Install ruby on windows
+        if: matrix.os == 'windows-latest'
+        run: |
+          choco install ruby --version 2.6.0.1
+
+      - name: Setup go 1.13.1
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13.1
+
+      - name: Install gauge
+        if: matrix.os != 'windows-latest'
+        run: |
+          echo $PATH
+          ls ~/.rbenv/versions/2.6.0/bin
           git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
           go run build/make.go --verbose

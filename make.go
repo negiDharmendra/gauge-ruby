@@ -182,6 +182,10 @@ func set(envName, envValue string) {
 }
 
 func runProcess(command string, workingdir string, arg ...string) {
+	path := os.Getenv("path")
+	log.Printf("System os.Getenv(\"path\") : %s\n", path)
+	path = os.Getenv("PATH")
+	log.Printf("System os.Getenv(\"PATH\") : %s\n", path)
 	cmd := exec.Command(command, arg...)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
