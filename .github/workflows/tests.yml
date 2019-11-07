@@ -10,7 +10,7 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-
+      - run: node -e "console.log(process.env)"
       - uses: actions/checkout@v1
 
       - name: Install ruby on linux
