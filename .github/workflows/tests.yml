@@ -138,6 +138,9 @@ jobs:
       - name: Install gauge-ruby
         shell: pwsh
         run: |
+          go env
+          echo "Installing ---github.com/getgauge/common > "
+          go get -u -d github.com/getgauge/common
           ${env:PATH} += ";C:\Program Files\gauge\bin"
           bundle install
           bundle exec rake install force_install
@@ -281,6 +284,10 @@ jobs:
       - name: Install gauge ruby
         shell: pwsh
         run: |
+          go env
+          echo "Installing ---github.com/getgauge/common > "
+          go get -u -d github.com/getgauge/common
+          ${env:PATH} += ";C:\Program Files\gauge\bin"
           bundle install
           echo "======Installing gauge ruby======"
           gauge -v
