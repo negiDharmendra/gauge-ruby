@@ -134,7 +134,7 @@ class ZipFileGenerator
             diskFilePath = File.join(@inputDir, zipFilePath)
             puts "Deflating " + diskFilePath
             if  File.directory?(diskFilePath)
-                io.mkdir(zipFilePath)
+                io.mkdir(zipFilePath) unless File.exist?(zipFilePath)
                 subdir =Dir.entries(diskFilePath); subdir.delete("."); subdir.delete("..")
                 writeEntries(subdir, zipFilePath, io)
             else
