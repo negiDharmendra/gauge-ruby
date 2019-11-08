@@ -132,18 +132,19 @@ jobs:
           gauge -v
           .\gradlew.bat clean rubyFT
 
-  lsp-linux:
+  lsp-tests:
     name: Run lsp on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, windows-latest]
     env:
       BUILD_FROM_COMMIT_HASH: 'true'
 
     steps:
       - uses: actions/checkout@v1
-      - run: |
+      - name: Set LATEST_COMMIT_HASH env to ${{ github.sha }}
+        run: |
           echo "::set-env name=LATEST_COMMIT_HASH::${{ github.sha}}"
 
       - name: Install ruby on linux
@@ -206,7 +207,7 @@ jobs:
         run: |
           cd gauge-lsp-tests
           gauge -v
-          gauge run specifications/rename/refactor.spec:8 --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd --verbose
+          gauge run  --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd
 
       - uses: actions/upload-artifact@master
         if: failure()
@@ -287,7 +288,7 @@ jobs:
         run: |
           cd gauge-lsp-tests
           gauge -v
-          gauge run specifications\rename\refactor.spec:8 --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd --verbose
+          gauge run specifications\rename\refactor.spec:8 --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd
 
       - uses: actions/upload-artifact@master
         if: failure()
