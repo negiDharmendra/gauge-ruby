@@ -198,7 +198,7 @@ jobs:
 
       - name: Prepare lsp tests
         run: |
-          git clone --depth=1 --branch=local-gauge-ruby https://github.com/getgauge/gauge-lsp-tests
+          git clone --depth=1 https://github.com/getgauge/gauge-lsp-tests
           cd gauge-lsp-tests
           npm install
           gauge install
@@ -279,7 +279,7 @@ jobs:
 
       - name: Prepare lsp tests
         run: |
-          git clone --depth=1 --branch=local-gauge-ruby https://github.com/getgauge/gauge-lsp-tests
+          git clone --depth=1 https://github.com/getgauge/gauge-lsp-tests
           cd gauge-lsp-tests
           npm install
           gauge install
