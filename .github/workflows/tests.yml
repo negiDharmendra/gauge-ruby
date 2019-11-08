@@ -210,12 +210,12 @@ jobs:
         run: |
           cd gauge-lsp-tests
           gauge -v
-          gauge run --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd --verbose
+          gauge run specifications/rename/refactor.spec:8 --tags='!knownIssue & (actions_on_project_load | actions_on_file_edit)' --env=ruby-wd --verbose
 
       - uses: actions/upload-artifact@master
         if: failure()
         with:
-          name: logs-linux
+          name: logs-${{ matrix.os }}
           path: gauge-lsp-tests/logs
 
   lsp-windows:
@@ -300,5 +300,5 @@ jobs:
       - uses: actions/upload-artifact@master
         if: failure()
         with:
-          name: logs-linux
+          name: logs-${{ matrix.os }}
           path: gauge-lsp-tests/logs
