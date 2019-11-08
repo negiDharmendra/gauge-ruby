@@ -139,16 +139,12 @@ jobs:
       matrix:
         os: [ubuntu-latest]
     env:
-      RUBY_PLUGIN_BRANCH: grpc
-      USE_LOCAL_GAUGE_RUBY: 'true'
+      BUILD_FROM_COMMIT_HASH: 'true'
 
     steps:
       - uses: actions/checkout@v1
       - run: |
-          echo $GITHUB_WORKSPACE
-          echo "::set-env name=LOCAL_GAUGE_RUBY_PATH::$GITHUB_WORKSPACE"
-      - run: |
-            echo $LOCAL_GAUGE_RUBY_PATH
+          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.ref}}"
 
       - name: Install ruby on linux
         if: matrix.os != 'windows-latest'
@@ -225,15 +221,11 @@ jobs:
       matrix:
         os: [windows-latest]
     env:
-      RUBY_PLUGIN_BRANCH: grpc
-      USE_LOCAL_GAUGE_RUBY: 'true'
+      BUILD_FROM_COMMIT_HASH: 'true'
     steps:
       - uses: actions/checkout@v1
       - run: |
-          echo $GITHUB_WORKSPACE
-          echo "::set-env name=LOCAL_GAUGE_RUBY_PATH::$GITHUB_WORKSPACE"
-      - run: |
-            echo $LOCAL_GAUGE_RUBY_PATH
+          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.ref}}"
 
       - name: Install ruby on linux
         if: matrix.os != 'windows-latest'
