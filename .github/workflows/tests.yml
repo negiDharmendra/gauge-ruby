@@ -10,23 +10,13 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - run: node -e "console.log(process.env)"
+
       - uses: actions/checkout@v1
 
-      - name: Install ruby on linux
-        if: matrix.os != 'windows-latest'
-        run: |
-          sudo apt-get install -y libreadline-dev
-          git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-          git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-          export PATH="$HOME/.rbenv/bin:$PATH"
-          rbenv install 2.6.0
-          echo "::add-path::~/.rbenv/versions/2.6.0/bin"
-
-      - name: Install ruby on windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install ruby --version 2.6.0.1
+      - name: Set up Ruby 2.6.x
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
 
       - name: Install bundler
         run: |
@@ -37,58 +27,46 @@ jobs:
           bundle install
           bundle exec rake spec
 
-  # ft-linux-macos:
-  #   name: Run FTs on ${{ matrix.os }}
-  #   runs-on: ${{ matrix.os }}
-  #   needs: test
-  #   env:
-  #     RUBY_PLUGIN_BRANCH: grpc
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest]
+  ft-linux-macos:
+    name: Run FTs on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    env:
+      RUBY_PLUGIN_BRANCH: grpc
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
 
-  #   steps:
-  #     - uses: actions/checkout@v1
-  #     - run: echo $RUBY_PLUGIN_BRANCH
+    steps:
+      - uses: actions/checkout@v1
 
-  #     - name: Get rbenv and ruby-build
-  #       run: |
-  #         git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-  #         git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
+      - name: Set up Ruby 2.6.x
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
 
-  #     - name: Install dependencies required to install Ruby
-  #       if: matrix.os == 'ubuntu-latest'
-  #       run: |
-  #         sudo apt-get install -y libreadline-dev
+      - name: Setup go 1.13.1
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.13.1
 
-  #     - name: Install ruby 2.6.0
-  #       run: |
-  #         export PATH="$HOME/.rbenv/bin:$PATH"
-  #         rbenv install 2.6.0
+      - name: Install gauge
+        run: |
+          git clone --depth=1 https://github.com/getgauge/gauge.git
+          cd gauge
+          go run build/make.go --verbose
+          go run build/make.go --install --prefix=/tmp/
+          echo "::add-path::/tmp/bin"
 
-  #     - name: Setup go 1.13.1
-  #       uses: actions/setup-go@v1
-  #       with:
-  #         go-version: 1.13.1
-
-  #     - name: Install gauge
-  #       run: |
-  #         git clone --depth=1 https://github.com/getgauge/gauge.git
-  #         cd gauge
-  #         go run build/make.go --verbose
-  #         go run build/make.go --install --prefix=/tmp/
-
-  #     - name: Run tests
-  #       run: |
-  #         export PATH="$HOME/.rbenv/versions/2.6.0/bin:/tmp/bin:$PATH"
-  #         gem install bundler:2.0.2
-  #         bundle install
-  #         bundle exec rake install force_install
-  #         git clone --depth=1 https://github.com/getgauge/gauge-tests
-  #         cd gauge-tests
-  #         gauge install
-  #         gauge -v
-  #         ./gradlew clean rubyFT
+      - name: Run tests
+        run: |
+          gem install bundler:2.0.2
+          bundle install
+          bundle exec rake install force_install
+          git clone --depth=1 https://github.com/getgauge/gauge-tests
+          cd gauge-tests
+          gauge install
+          gauge -v
+          ./gradlew clean rubyFT
 
   ft-windows:
     name: Run FTs on windows
@@ -115,6 +93,7 @@ jobs:
           cd gauge
           go run build/make.go --verbose
           go run build/make.go --install
+          echo "::add-path::C:\\Program Files\\gauge\\bin"
 
       - name: Install gauge ruby
         shell: pwsh
@@ -125,7 +104,6 @@ jobs:
       - name: Run tests
         shell: pwsh
         run: |
-          ${env:PATH} += ";C:\Program Files\gauge\bin"
           git clone --depth=1 https://github.com/getgauge/gauge-tests
           cd gauge-tests
           gauge install
@@ -147,20 +125,10 @@ jobs:
         run: |
           echo "::set-env name=LATEST_COMMIT_HASH::${{ github.sha}}"
 
-      - name: Install ruby on linux
-        if: matrix.os != 'windows-latest'
-        run: |
-          sudo apt-get install -y libreadline-dev
-          git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-          git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-          export PATH="$HOME/.rbenv/bin:$PATH"
-          rbenv install 2.6.0
-          echo "::add-path::$HOME/.rbenv/versions/2.6.0/bin"
-
-      - name: Install ruby on windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install ruby --version 2.6.0.1
+      - name: Set up Ruby 2.6.x
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
 
       - name: Setup go 1.13.1
         uses: actions/setup-go@v1
@@ -170,8 +138,6 @@ jobs:
       - name: Install gauge
         if: matrix.os != 'windows-latest'
         run: |
-          echo $PATH
-          ls ~/.rbenv/versions/2.6.0/bin
           git clone --depth=1 https://github.com/getgauge/gauge.git
           cd gauge
           go run build/make.go --verbose
@@ -228,20 +194,10 @@ jobs:
       - run: |
           echo "::set-env name=LATEST_COMMIT_HASH::${{ github.sha}}"
 
-      - name: Install ruby on linux
-        if: matrix.os != 'windows-latest'
-        run: |
-          sudo apt-get install -y libreadline-dev
-          git clone https://github.com/rbenv/rbenv.git ~/.rbenv
-          git clone https://github.com/rbenv/ruby-build.git ~/.rbenv/plugins/ruby-build
-          export PATH="$HOME/.rbenv/bin:$PATH"
-          rbenv install 2.6.0
-          echo "::add-path::$HOME/.rbenv/versions/2.6.0/bin"
-
-      - name: Install ruby on windows
-        if: matrix.os == 'windows-latest'
-        run: |
-          choco install ruby --version 2.6.0.1
+      - name: Set up Ruby 2.6.x
+        uses: actions/setup-ruby@v1
+        with:
+          ruby-version: 2.6.x
 
       - name: Setup go 1.13.1
         uses: actions/setup-go@v1
