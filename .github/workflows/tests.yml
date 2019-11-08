@@ -30,6 +30,7 @@ jobs:
   fts:
     name: Run FTs on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: tests
     env:
       RUBY_PLUGIN_BRANCH: grpc
     strategy:
@@ -87,6 +88,7 @@ jobs:
   lsp-tests:
     name: Run lsp on ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
+    needs: tests
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest]
