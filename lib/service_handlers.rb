@@ -16,6 +16,7 @@
 # along with Gauge-Ruby.  If not, see <http://www.gnu.org/licenses/>.
 
 require_relative 'runner_services_pb'
+require_relative 'log'
 Dir[File.join(File.dirname(__FILE__), 'processors/*.rb')].each {|file| require file}
 
 module Gauge
@@ -31,6 +32,7 @@ module Gauge
     end
 
     def cache_file(request, _call)
+      GaugeLog.info("Inside cache_file")
       cache_file_response(request)
     end
 

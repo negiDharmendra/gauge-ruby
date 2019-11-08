@@ -39,8 +39,10 @@ module Gauge
 
     def self.add_step(step_value, step_info)
       if @@steps_map.key? step_value
+        GaugeLog.info " @@steps_map has #{step_value}"
         @@steps_map[step_value][:locations].push(step_info[:location])
       else
+        GaugeLog.info " @@steps_map doesn't has #{step_value}. \t Filepath : #{step_info ? step_info.inspect : " nothing "}\n"
         @@steps_map[step_value] = {
             locations: [step_info[:location]],
             block: step_info[:block],
@@ -51,7 +53,6 @@ module Gauge
     end
 
     def self.get_step_info(step_value)
-      GaugeLog.info " @@steps_map  : #{ @@steps_map.to_json }"
       @@steps_map[step_value]
     end
 
