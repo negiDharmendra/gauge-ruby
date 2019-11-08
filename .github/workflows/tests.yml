@@ -68,11 +68,17 @@ jobs:
           go run build/make.go --install
           echo "::add-path::C:\\Program Files\\gauge\\bin"
 
-      - name: Run tests
+      - name: Install bundler
         run: |
           gem install bundler:2.0.2
-          bundle install
-          bundle exec rake install force_install
+
+      - name: Install gauge ruby
+        run: |
+          go run ./make.go
+          go run ./make.go --install
+
+      - name: Run tests
+        run: |
           git clone --depth=1 https://github.com/getgauge/gauge-tests
           cd gauge-tests
           gauge install
