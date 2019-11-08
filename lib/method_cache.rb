@@ -51,6 +51,7 @@ module Gauge
     end
 
     def self.get_step_info(step_value)
+      GaugeLog.info " @@steps_map  : #{ @@steps_map.to_json }"
       @@steps_map[step_value]
     end
 

@@ -31,12 +31,10 @@ module Gauge
       begin
         step_info = get_step request.oldStepValue.stepValue
         refactored_info = CodeParser.refactor step_info, request.paramPositions, request.newStepValue
-        GaugeLog.info "step_info : #{step_info.inspect}"
+        GaugeLog.info "step_info : #{step_info.to_json}"
         file = step_info[:locations][0][:file]
         File.write file, refactored_info[:content] if request.saveChanges
         GaugeLog.info "file : #{file}"
-        GaugeLog.info "step_info : #{step_info.inspect}"
-        GaugeLog.info "refactored_info : #{refactored_info.inspect}"
         response.filesChanged.push(file)
         changes = Messages::FileChanges.new(fileName: file, fileContent: refactored_info[:content], diffs: refactored_info[:diffs])
         response.fileChanges.push(changes)

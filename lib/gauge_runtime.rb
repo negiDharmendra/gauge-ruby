@@ -74,6 +74,7 @@ module Gauge
     STDOUT.sync = true
     StaticLoader.load_files(DEFAULT_IMPLEMENTATIONS_DIR_PATH)
     GaugeLog.info "Current User id : #{Process.uid} User name : #{ENV['USER']}"
+    GaugeLog.info "ENV : #{ENV.select { |k, v| k.start_with?('GAUGE') }.inspect}"
     GaugeLog.debug 'Starting grpc server..'
     server = GRPC::RpcServer.new
     port = server.add_http2_port('127.0.0.1:0', :this_port_is_insecure)
