@@ -144,7 +144,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: |
-          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.ref}}"
+          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.sha}}"
 
       - name: Install ruby on linux
         if: matrix.os != 'windows-latest'
@@ -225,7 +225,7 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - run: |
-          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.ref}}"
+          echo "::set-env name=LATEST_COMMIT_HASH::${{ github.sha}}"
 
       - name: Install ruby on linux
         if: matrix.os != 'windows-latest'
