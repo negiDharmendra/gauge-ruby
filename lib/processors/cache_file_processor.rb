@@ -18,6 +18,7 @@
 # along with Gauge-Ruby.  If not, see <http://www.gnu.org/licenses/>.
 
 require_relative '../static_loader'
+require_relative '../log'
 require_relative '../method_cache'
 module Gauge
   # @api private
@@ -29,6 +30,7 @@ module Gauge
 
     def cache_file_response(request)
       f = request.filePath
+      GaugeLog.info("cache_file_response filepath: #{f}")
       status =  Messages::CacheFileRequest::FileStatus.resolve(request.status)
       if (status == Messages::CacheFileRequest::FileStatus::CHANGED) || (status == Messages::CacheFileRequest::FileStatus::OPENED)
         ast = CodeParser.code_to_ast(request.content)

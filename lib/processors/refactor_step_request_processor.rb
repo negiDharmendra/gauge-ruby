@@ -16,6 +16,7 @@
 # along with Gauge-Ruby.  If not, see <http://www.gnu.org/licenses/>.
 
 require_relative '../code_parser'
+require_relative '../log'
 
 module Gauge
   module Processors
@@ -32,6 +33,7 @@ module Gauge
         refactored_info = CodeParser.refactor step_info, request.paramPositions, request.newStepValue
         file = step_info[:locations][0][:file]
         File.write file, refactored_info[:content] if request.saveChanges
+        GaugeLog.info "file : #{file}"
         response.filesChanged.push(file)
         changes = Messages::FileChanges.new(fileName: file, fileContent: refactored_info[:content], diffs: refactored_info[:diffs])
         response.fileChanges.push(changes)
